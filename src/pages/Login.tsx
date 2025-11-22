@@ -24,7 +24,7 @@ const Login = () => {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
+
         // Redirect authenticated users
         if (session?.user) {
           setTimeout(() => {
@@ -38,7 +38,7 @@ const Login = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         navigate("/");
       }
@@ -49,7 +49,7 @@ const Login = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast.error("Please fill in all fields");
       return;
@@ -83,7 +83,7 @@ const Login = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast.error("Please fill in all fields");
       return;
@@ -98,7 +98,7 @@ const Login = () => {
 
     try {
       const redirectUrl = `${window.location.origin}/`;
-      
+
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -128,87 +128,116 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <div className="container mx-auto px-4 py-20">
-        <div className="max-w-md mx-auto">
-          <div className="text-center mb-8 animate-fade-in">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                <GraduationCap className="h-10 w-10 text-primary" />
+        <div className="max-w-4xl mx-auto grid lg:grid-cols-2 gap-8 items-center">
+          <div className="max-w-md mx-auto w-full">
+            <div className="text-center mb-8 animate-fade-in">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                  <GraduationCap className="h-10 w-10 text-primary" />
+                </div>
               </div>
+              <h1 className="text-4xl font-bold text-foreground mb-2">Welcome Back</h1>
+              <p className="text-muted-foreground">Sign in to your account to continue</p>
             </div>
-            <h1 className="text-4xl font-bold text-foreground mb-2">Welcome Back</h1>
-            <p className="text-muted-foreground">Sign in to your account to continue</p>
+
+            <Card className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
+              <CardHeader>
+                <CardTitle>Login or Sign Up</CardTitle>
+                <CardDescription>
+                  Enter your credentials to access your account
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="your.email@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-3 pt-4">
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      onClick={handleLogin}
+                      disabled={loading}
+                    >
+                      {loading ? "Please wait..." : "Log In"}
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={handleSignup}
+                      disabled={loading}
+                    >
+                      Create New Account
+                    </Button>
+                  </div>
+                </form>
+
+                <div className="mt-6 text-center text-sm text-muted-foreground">
+                  <p>
+                    Want to become a mentor?{" "}
+                    <button
+                      onClick={() => navigate("/register-mentor")}
+                      className="text-primary hover:underline font-semibold"
+                    >
+                      Register as a Mentor
+                    </button>
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
-          <Card className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <CardHeader>
-              <CardTitle>Login or Sign Up</CardTitle>
-              <CardDescription>
-                Enter your credentials to access your account
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your.email@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="flex flex-col gap-3 pt-4">
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    onClick={handleLogin}
-                    disabled={loading}
-                  >
-                    {loading ? "Please wait..." : "Log In"}
-                  </Button>
-                  
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={handleSignup}
-                    disabled={loading}
-                  >
-                    Create New Account
-                  </Button>
-                </div>
-              </form>
-
-              <div className="mt-6 text-center text-sm text-muted-foreground">
+          {/* Side Guide Card - Visible on Large Screens */}
+          <div className="hidden lg:block animate-fade-in" style={{ animationDelay: "0.2s" }}>
+            <Card className="bg-primary/5 border-primary/20 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl text-primary flex items-center gap-2">
+                  👋 New to MentorLink?
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-muted-foreground">
                 <p>
-                  Want to become a mentor?{" "}
-                  <button
-                    onClick={() => navigate("/register-mentor")}
-                    className="text-primary hover:underline font-semibold"
-                  >
-                    Register as a Mentor
-                  </button>
+                  Creating an account is easy! You don't need to go to a separate page.
                 </p>
-              </div>
-            </CardContent>
-          </Card>
+                <div className="bg-background/50 p-4 rounded-lg border border-primary/10 space-y-2">
+                  <p className="font-medium text-foreground">How to Register:</p>
+                  <ol className="list-decimal list-inside space-y-1 text-sm">
+                    <li>Enter the <strong>email</strong> you want to register with.</li>
+                    <li>Enter the <strong>password</strong> you want to set.</li>
+                    <li>Click the <strong>Create New Account</strong> button.</li>
+                  </ol>
+                </div>
+                <p className="text-sm">
+                  That's it! You'll be instantly registered and logged in.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
